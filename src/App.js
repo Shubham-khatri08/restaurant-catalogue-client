@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import MenuItemCard from "./components/card";
 
 function App() {
+  const [catalogues, setCalalogues] = useState([]);
+
+  useEffect(() => {
+    getCatalogues();
+  }, []);
+
+  const getCatalogues = () => {
+    fetch("http://localhost:5000/api/v1/catalogues", {
+      method: "GET",
+    })
+      .then((response) => {
+        response.json().then((data) => {
+          setCalalogues(data.data);
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="row">
+        {catalogues.map((data, i) => (
+          <div key={i} className="col">
+            <MenuItemCard item={data} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
